@@ -1,6 +1,6 @@
 ct2_model_path: ct2/ct2-nllb-200-3.3B-int8
 sp_model_path: sp/sentencepiece.bpe.model
-comet_model_name: Unbabel/wmt22-comet-da
+comet_model_name: masakhane/africomet-mtl
 batch_size: 16
 beam_size: 2
 src_lang: eng_Latn

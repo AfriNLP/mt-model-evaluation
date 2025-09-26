@@ -27,7 +27,7 @@ def setup_logger(log_file):
     logger.addHandler(sh)
     return logger
 
-def load_comet_model(model_name="Unbabel/wmt22-comet-da"):
+def load_comet_model(model_name="masakhane/africomet-mtl"):
     from comet import download_model, load_from_checkpoint
 
     model_path = download_model(model_name)
@@ -94,7 +94,7 @@ def main():
 
     ct_model_path = config.get("ct_model_path") or config.get("ct2_model_path")
     sp_model_path = config["sp_model_path"]
-    comet_model_name = config.get("comet_model_name", "Unbabel/wmt22-comet-da")
+    comet_model_name = config.get("comet_model_name", "masakhane/africomet-mtl")
     src_lang = config["src_lang"]
     tgt_lang = config["tgt_lang"]
     dataset_path = config["dataset"]["path"]
