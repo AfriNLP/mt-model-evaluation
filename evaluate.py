@@ -67,10 +67,10 @@ def evaluate_model(source_sentences, translations, references, comet_model, logg
     chrf = round(chrf.score, 2)
     logger.info(f"chrF++: {chrf}")
 
-    metric = sacrebleu.metrics.TER()
-    ter = metric.corpus_score(translations, [references])
-    ter = round(ter.score, 2)
-    logger.info(f"TER: {ter}")
+    # metric = sacrebleu.metrics.TER()
+    # ter = metric.corpus_score(translations, [references])
+    # ter = round(ter.score, 2)
+    # logger.info(f"TER: {ter}")
 
     df = pd.DataFrame({"src":source_sentences, "mt":translations, "ref":references})
     data = df.to_dict(orient="records")
@@ -78,7 +78,7 @@ def evaluate_model(source_sentences, translations, references, comet_model, logg
     comet_score = round(comet_output["system_score"]*100, 2)
     logger.info(f"COMET: {comet_score}")
 
-    return bleu, chrf, ter, comet_score
+    return bleu, chrf, comet_score
 
 def main():
     argparser = argparse.ArgumentParser()
@@ -108,8 +108,8 @@ def main():
     logger.info(f"Loading dataset from {dataset_path} (split: {split})")
     ds_src= load_dataset(dataset_path, src_config, split=split, trust_remote_code=True)
     ds_tgt= load_dataset(dataset_path, tgt_config, split=split, trust_remote_code=True)
-    source_sentences = ds_src[text_col]
-    reference_sentences = ds_tgt[text_col]
+    source_sentences = ds_src[text_col][:5]
+    reference_sentences = ds_tgt[text_col][:5]
     logger.info("Loading models...")
     sp, translator = load_models(ct_model_path, sp_model_path)
     comet_model = load_comet_model(comet_model_name)
