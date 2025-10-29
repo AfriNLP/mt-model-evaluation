@@ -154,7 +154,9 @@ def evaluate_model(source_sentences, translations, references, comet_model, logg
     # ter = metric.corpus_score(translations, [references])
     # ter = round(ter.score, 2)
     # logger.info(f"TER: {ter}")
-
+    if comet_model is None:
+        logger.info("COMET: N/A (no COMET model specified)")
+        return bleu, chrf, None
     df = pd.DataFrame({"src":source_sentences, "mt":translations, "ref":references})
     data = df.to_dict(orient="records")
     comet_output= comet_model.predict(data, batch_size=16, gpus=1 if torch.cuda.is_available() else 0) 
@@ -183,7 +185,11 @@ def main():
 
     logger.info("Loading models...")
     sp, translator = load_models(ct_model_path, sp_model_path)
-    comet_model = load_comet_model(comet_model_name)
+    euro_comet_model_name = "Unbabel/wmt22-comet-da"
+    afri_comet_model_name = "masakhane/africomet-mtl"
+    euro_comet_model = load_comet_model(euro_comet_model_name)
+    afri_comet_model = load_comet_model(afri_comet_model_name)
+    # comet_model = load_comet_model(comet_model_name)
 
     # summary_log = []
 
@@ -215,6 +221,13 @@ def main():
             batch_size=batch_size, beam_size=beam_size
         )
 
+        comet_model_cfg_name = test_cfg.get("comet_model_name", "masakhane/africomet-mtl")
+        if comet_model_cfg_name == "none":
+            comet_model = None
+        elif comet_model_cfg_name == euro_comet_model_name:
+            comet_model = euro_comet_model
+        elif comet_model_cfg_name == afri_comet_model_name:
+            comet_model = afri_comet_model
         logger.info("Evaluating translations...")
         bleu, chrf, comet_score = evaluate_model(source_sentences, translations, reference_sentences, comet_model, logger)
 

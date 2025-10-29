@@ -1,6 +1,6 @@
 ct2_model_path: ct2/ct2-nllb-200-3.3B-no-quantization
 sp_model_path: sp/sentencepiece.bpe.model
-comet_model_name: masakhane/africomet-mtl
+
 batch_size: 16
 beam_size: 2
 testset:
@@ -13,6 +13,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: amh_Ethi
+    comet_model_name: masakhane/africomet-mtl
   am-en:
     dataset:
       path: facebook/flores
@@ -22,6 +23,7 @@ testset:
       split: devtest
     src_lang: amh_Ethi
     tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
   en-sw:
     dataset:
       path: facebook/flores
@@ -31,6 +33,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: swh_Latn
+    comet_model_name: masakhane/africomet-mtl
   sw-en:
     dataset:
       path: facebook/flores
@@ -40,6 +43,7 @@ testset:
       split: devtest
     src_lang: swh_Latn
     tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
   en-ha:
     dataset:
       path: facebook/flores
@@ -49,6 +53,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: hau_Latn
+    comet_model_name: masakhane/africomet-mtl
   ha-en:
     dataset:
       path: facebook/flores
@@ -58,6 +63,7 @@ testset:
       split: devtest
     src_lang: hau_Latn
     tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
   en-zu:
     dataset:
       path: facebook/flores
@@ -67,6 +73,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: zul_Latn
+    comet_model_name: masakhane/africomet-mtl
   zu-en:
     dataset:
       path: facebook/flores
@@ -76,6 +83,7 @@ testset:
       split: devtest
     src_lang: zul_Latn
     tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
   en-so:
     dataset:
       path: facebook/flores
@@ -85,6 +93,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: som_Latn
+    comet_model_name: masakhane/africomet-mtl
   so-en:
     dataset:
       path: facebook/flores
@@ -94,6 +103,7 @@ testset:
       split: devtest
     src_lang: som_Latn
     tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
   en-yo:
     dataset:
       path: facebook/flores
@@ -103,6 +113,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: yor_Latn
+    comet_model_name: masakhane/africomet-mtl
   yo-en:
     dataset:
       path: facebook/flores
@@ -112,6 +123,7 @@ testset:
       split: devtest
     src_lang: yor_Latn
     tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
   en-af:
     dataset:
       path: facebook/flores
@@ -121,6 +133,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: afr_Latn
+    comet_model_name: masakhane/africomet-mtl
   af-en:
     dataset:
       path: facebook/flores
@@ -130,6 +143,7 @@ testset:
       split: devtest
     src_lang: afr_Latn
     tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
   en-ar:
     dataset:
       path: facebook/flores
@@ -139,6 +153,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: arb_Arab
+    comet_model_name: Unbabel/wmt22-comet-da
   ar-en:
     dataset:
       path: facebook/flores
@@ -148,6 +163,7 @@ testset:
       split: devtest
     src_lang: arb_Arab
     tgt_lang: eng_Latn
+    comet_model_name: Unbabel/wmt22-comet-da
   en-arz:
     dataset:
       path: facebook/flores
@@ -157,6 +173,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: arz_Arab
+    comet_model_name: Unbabel/wmt22-comet-da
   arz-en:
     dataset:
       path: facebook/flores
@@ -166,6 +183,7 @@ testset:
       split: devtest
     src_lang: arz_Arab
     tgt_lang: eng_Latn
+    comet_model_name: Unbabel/wmt22-comet-da
   en-fr:
     dataset:
       path: facebook/flores
@@ -175,6 +193,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: fra_Latn
+    comet_model_name: Unbabel/wmt22-comet-da
   fr-en:
     dataset:
       path: facebook/flores
@@ -184,6 +203,7 @@ testset:
       split: devtest
     src_lang: fra_Latn
     tgt_lang: eng_Latn
+    comet_model_name: Unbabel/wmt22-comet-da
   en-es:
     dataset:
       path: facebook/flores
@@ -193,6 +213,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: spa_Latn
+    comet_model_name: Unbabel/wmt22-comet-da
   es-en:
     dataset:
       path: facebook/flores
@@ -202,6 +223,7 @@ testset:
       split: devtest
     src_lang: spa_Latn
     tgt_lang: eng_Latn
+    comet_model_name: Unbabel/wmt22-comet-da
   en-pt:
     dataset:
       path: facebook/flores
@@ -211,6 +233,7 @@ testset:
       split: devtest
     src_lang: eng_Latn
     tgt_lang: por_Latn
+    comet_model_name: Unbabel/wmt22-comet-da
   pt-en:
     dataset:
       path: facebook/flores
@@ -220,6 +243,7 @@ testset:
       split: devtest
     src_lang: por_Latn
     tgt_lang: eng_Latn
+    comet_model_name: Unbabel/wmt22-comet-da
   fr-wo:
     dataset:
       path: facebook/flores
@@ -229,6 +253,7 @@ testset:
       split: devtest
     src_lang: fra_Latn
     tgt_lang: wol_Latn
+    comet_model_name: none
   wo-fr:
     dataset:
       path: facebook/flores
@@ -238,6 +263,7 @@ testset:
       split: devtest
     src_lang: wol_Latn
     tgt_lang: fra_Latn
+    comet_model_name: none
   fr-ln:
     dataset: 
       path: facebook/flores
@@ -247,6 +273,7 @@ testset:
       split: devtest
     src_lang: fra_Latn
     tgt_lang: lin_Latn
+    comet_model_name: none
   ln-fr:
     dataset:
       path: facebook/flores
@@ -256,6 +283,8 @@ testset:
       split: devtest
     src_lang: lin_Latn
     tgt_lang: fra_Latn
+    comet_model_name: none
+
   
 
 logging:
