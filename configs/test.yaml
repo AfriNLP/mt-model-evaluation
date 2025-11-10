@@ -1,7 +1,7 @@
-ct2_model_path: ct2/ct2-nllb-200-3.3B-no-quantization
+ct2_model_path: ct2/ct2-nllb-200-600m-no-qunat
 sp_model_path: sp/sentencepiece.bpe.model
 comet_model_name: masakhane/africomet-mtl
-batch_size: 16
+batch_size: 4
 beam_size: 2
 testset:
   en-am:
