@@ -147,94 +147,6 @@ def generate_translations(tokenizer, translator, src_lang, tgt_lang, source_sent
 
     return translations_desubword, metrics
 
-# def generate_translations(tokenizer, translator, src_lang, tgt_lang, source_sentences, batch_size=2048, beam_size=2):
-
-#     source_encoded = tokenizer.encode_batch(
-#         source_sentences,
-#         return_tensors="pt",
-#         padding=True,
-#         truncation=True,
-#         max_length=512
-#     )
-#     num_input_tokens = sum(len(s) for s in source_encoded)
-#     source_sent_tokens = tokenizer.convert_ids_to_tokens(source_encoded)
-
-#     num_input_tokens = sum(len(s) for s in source_sent_tokens)
-
-#     target_prefix = [[tgt_lang]] * len(source_sent_tokens)
-
-#     start = time.perf_counter()
-#     results = translator.translate_batch(
-#         source_sent_tokens,
-#         target_prefix=target_prefix
-#     )
-#     end = time.perf_counter()
-#     execution_time = end - start
-
-#     translations = [result.hypotheses[0] for result in results]
-#     num_output_tokens = sum(len(t) for t in translations)
-#     translations_desubword = tokenizer.batch_decode(translations, skip_special_tokens=True)
-    
-#     total_tokens = num_input_tokens + num_output_tokens
-#     tokens_per_sec = total_tokens / execution_time if execution_time > 0 else float("inf")
-#     metrics = {
-#         "execution_time_sec": execution_time,
-#         "input_tokens": num_input_tokens,
-#         "output_tokens": num_output_tokens,
-#         "total_tokens": total_tokens,
-#         "tokens_per_sec": tokens_per_sec
-#     }
-#     return translations_desubword, metrics
-
-
-    # # Clean sentences
-    # source_sents = [sent.strip() for sent in source_sentences]
-
-    # # Target prefix
-    # target_prefix = [[tgt_lang]] * len(source_sents)
-
-    # # Subword encode and add special tokens
-    # source_sents_subworded = sp.encode_as_pieces(source_sents)
-    # source_sents_subworded = [[src_lang] + sent + [""] for sent in source_sents_subworded]
-
-    # # Count input tokens
-    # num_input_tokens = sum(len(s) for s in source_sents_subworded)
-
-    # # Run translation with timing
-    # start = time.perf_counter()
-    # results = translator.translate_batch(
-    #     source_sents_subworded,
-    #     batch_type="tokens",
-    #     max_batch_size=batch_size,
-    #     beam_size=beam_size,
-    #     target_prefix=target_prefix
-    # )
-    # end = time.perf_counter()
-    # execution_time = end - start
-
-    # # Extract best hypotheses
-    # translations = [result.hypotheses[0] for result in results]
-
-    # # Count output tokens
-    # num_output_tokens = sum(len(t) for t in translations)
-
-    # # Decode
-    # translations_desubword = sp.decode(translations)
-    # translations_desubword = [sent[len(tgt_lang):].strip() for sent in translations_desubword]
-
-    # # Metrics
-    # total_tokens = num_input_tokens + num_output_tokens
-    # tokens_per_sec = total_tokens / execution_time if execution_time > 0 else float("inf")
-
-    # metrics = {
-    #     "execution_time_sec": execution_time,
-    #     "input_tokens": num_input_tokens,
-    #     "output_tokens": num_output_tokens,
-    #     "total_tokens": total_tokens,
-    #     "tokens_per_sec": tokens_per_sec
-    # }
-
-    # return translations_desubword, metrics
 
 def evaluate_model(source_sentences, translations, references, comet_model, logger):
     bleu = sacrebleu.corpus_bleu(translations, [references])
@@ -309,15 +221,15 @@ def main():
         ds_tgt = load_dataset(dataset_path, tgt_config, split=split, trust_remote_code=True)
 
         # Select a small sample for testing (e.g., first 5 items), matching indices
-        sample_size = 5
-        ds_src = ds_src.select(range(sample_size))
-        ds_tgt = ds_tgt.select(range(sample_size))
+        # sample_size = 5
+        # ds_src = ds_src.select(range(sample_size))
+        # ds_tgt = ds_tgt.select(range(sample_size))
 
         # Print samples from ds_src and ds_tgt
-        logger.info("Sample from ds_src:")
-        logger.info(ds_src[text_col][:5])
-        logger.info("Sample from ds_tgt:")
-        logger.info(ds_tgt[text_col][:5])
+        # logger.info("Sample from ds_src:")
+        # logger.info(ds_src[text_col][:5])
+        # logger.info("Sample from ds_tgt:")
+        # logger.info(ds_tgt[text_col][:5])
 
         source_sentences = ds_src[text_col]
         reference_sentences = ds_tgt[text_col]
