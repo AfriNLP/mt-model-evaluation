@@ -1,7 +1,7 @@
-ct2_model_path: ct2/ct2-nllb-200-distilled-600M-no-quantization
-sp_model_path: sp/sentencepiece.bpe.model
+ct2_model_path: ct2/ct2-nllb-200-distilled-600M-no-quant
+tokenizer_path: nllb-200-distilled-600M/
 
-batch_size: 2
+batch_size: 4
 beam_size: 2
 testset:
   en-am:
@@ -290,4 +290,6 @@ testset:
 logging:
   debug: true
   log_dir: "logs/"
-  log_file: nllb-200-3.3B-no-quantization-eval.log
+  log_file: "new-nllb-200-distilled-600M-no-quantization-eval.log"
+  results_file: "new-nllb-200-distilled-600M-no-quantization-eval-results.json"
+  evaluation_summary_file: "new-nllb-200-distilled-600M-no-quantization-eval-summary.csv"
