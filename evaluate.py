@@ -20,14 +20,7 @@ import time
 import json
 import os
 
-RESULTS_FILE = "evaluation_results.json"
 
-# Load existing results
-if os.path.exists(RESULTS_FILE):
-    with open(RESULTS_FILE, "r") as f:
-        existing_results = json.load(f)
-else:
-    existing_results = {}
 
 
 
@@ -83,12 +76,10 @@ def load_comet_model(model_name="masakhane/africomet-mtl"):
     model = load_from_checkpoint(model_path)
     return model
 
-def load_models(ct_model_path, sp_model_path):
-    # sp = spm.SentencePieceProcessor()
-    # sp.load(sp_model_path)
-    tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-600M", src_lang="eng_Latn")
+def load_models(ct_model_path, tokenizer_path):
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, use_fast=False)
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    translator = ctranslate2.Translator(ct_model_path, device=device)   
+    translator = ctranslate2.Translator(ct_model_path, device=device)
     return tokenizer, translator
 
 
@@ -172,6 +163,7 @@ def evaluate_model(source_sentences, translations, references, comet_model, logg
 
     return bleu, chrf, comet_score
 
+
 def main():
     argparser = argparse.ArgumentParser()
     argparser.add_argument("--config", type=str, required=True, help="Path to YAML config file")
@@ -179,19 +171,28 @@ def main():
 
     with open(args.config, "r") as f:
         config = yaml.safe_load(f)
+    log_cfg = config.get("logging", {})
 
-    log_file = config.get("log_file", "logs/am_eval.log")
+    results_file = log_cfg.get("results_file", "evaluation_results.json")
+    summary_file = log_cfg.get("evaluation_summary_file", "evaluation_summary.csv")
+
+    # Load existing results
+    if os.path.exists(results_file):
+        with open(results_file, "r") as f:
+            existing_results = json.load(f)
+    else:
+        existing_results = {}
+
     logger = setup_logger(config)
     logger.info("Starting evaluation script.")
-    # log_file = config.get("log_file", "logs/am_eval.log")
-    ct_model_path = config.get("ct_model_path") or config.get("ct2_model_path")
-    sp_model_path = config["sp_model_path"]
-    comet_model_name = config.get("comet_model_name", "masakhane/africomet-mtl")
+    ct_model_path = config.get("ct2_model_path")
+    tokenizer_path = config.get("tokenizer_path")
+    
     batch_size = config.get("batch_size", 2048)
     beam_size = config.get("beam_size", 2)
 
     logger.info("Loading models...")
-    tokenizer, translator = load_models(ct_model_path, sp_model_path)
+    tokenizer, translator = load_models(ct_model_path, tokenizer_path)
     euro_comet_model_name = "Unbabel/wmt22-comet-da"
     afri_comet_model_name = "masakhane/africomet-mtl"
     euro_comet_model = load_comet_model(euro_comet_model_name)
@@ -234,19 +235,23 @@ def main():
         source_sentences = ds_src[text_col]
         reference_sentences = ds_tgt[text_col]
 
+        tokenizer.src_lang = src_lang
+
+        
+
         logger.info("Generating translations...")
         translations, metrics = generate_translations(
             tokenizer, translator, src_lang, tgt_lang, source_sentences,
             batch_size=batch_size, beam_size=beam_size
         )
 
-        # Print sample translations
-        logger.info("Sample translations:")
-        for i in range(min(5, len(source_sentences))):
-            logger.info(f"SRC: {source_sentences[i]}")
-            logger.info(f"REF: {reference_sentences[i]}")
-            logger.info(f"MT : {translations[i]}")
-            logger.info("-" * 40)
+        # # Print sample translations
+        # logger.info("Sample translations:")
+        # for i in range(min(5, len(source_sentences))):
+        #     logger.info(f"SRC: {source_sentences[i]}")
+        #     logger.info(f"REF: {reference_sentences[i]}")
+        #     logger.info(f"MT : {translations[i]}")
+        #     logger.info("-" * 40)
 
 
 
@@ -279,7 +284,7 @@ def main():
 
         # Save after each testset to prevent data loss
         existing_results[test_name] = summary_entry
-        with open(RESULTS_FILE, "w") as f:
+        with open(results_file, "w") as f:
             json.dump(existing_results, f, indent=2)
 
         # summary_log.append(summary_entry)
@@ -313,7 +318,7 @@ def main():
             tablefmt="github"
         ))
 
-        with open("evaluation_summary.csv", "w", newline="") as f:
+        with open(summary_file, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow([
                 "Testset", "Source Lang", "Target Lang", "BLEU", "chrF++", "COMET",
