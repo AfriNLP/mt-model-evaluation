@@ -101,6 +101,17 @@ def generate_translations(sp, translator, src_lang, tgt_lang, source_sentences, 
     # Subword encode and add special tokens
     source_sents_subworded = sp.encode_as_pieces(source_sents)
     source_sents_subworded = [[src_lang] + sent + [""] for sent in source_sents_subworded]
+    print("\n===== SPM INPUT SAMPLE =====")
+    for idx, toks in enumerate(source_sents_subworded):
+        print(f"Sample #{idx}")
+        print("Raw sentence:", source_sentences[idx])
+        print("SPM tokens:", toks)
+        if idx == 2:   # show only first 3 to keep output manageable
+            break
+
+    print("Target prefix:", target_prefix[:3])
+    print("============================\n")
+
 
     # Count input tokens
     num_input_tokens = sum(len(s) for s in source_sents_subworded)
@@ -214,6 +225,11 @@ def main():
         ds_tgt = load_dataset(dataset_path, tgt_config, split=split, trust_remote_code=True)
         source_sentences = ds_src[text_col]
         reference_sentences = ds_tgt[text_col]
+
+        # take only first N samples for quick testing
+        N = 3
+        source_sentences = source_sentences[:N]
+        reference_sentences = reference_sentences[:N]
 
         logger.info("Generating translations...")
         translations, metrics = generate_translations(
