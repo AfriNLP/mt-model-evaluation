@@ -1,7 +1,7 @@
 ct2_model_path: ct2/ct2-nllb-200-3.3B-no-quantization
 sp_model_path: sp/sentencepiece.bpe.model
 
-batch_size: 16
+batch_size: 8rm 
 beam_size: 2
 testset:
   en-am:
