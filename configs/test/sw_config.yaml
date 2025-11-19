@@ -1,0 +1,14 @@
+ct2_model_path: ct2/ct2-nllb-200-3.3B-int8
+sp_model_path: sp/sentencepiece.bpe.model
+comet_model_name: Unbabel/wmt22-comet-da
+batch_size: 16
+beam_size: 2
+src_lang: eng_Latn
+tgt_lang: swh_Latn
+dataset:
+  path: facebook/flores
+  src_config: eng_Latn
+  tgt_config: swh_Latn
+  text_col: sentence
+  split: devtest
+log_file: logs/en_sw_eval.log

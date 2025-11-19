@@ -1,0 +1,57 @@
+ct2_model_path: ../../mt-model-evaluation/ct2/ct2-nllb-200-3.3B-no-quantization/
+sp_model_path: sp/sentencepiece.bpe.model
+
+batch_size: 1024
+beam_size: 2
+testset:
+  en-am:
+    dataset:
+      path: facebook/flores
+      src_config: eng_Latn
+      tgt_config: amh_Ethi
+      text_col: sentence
+      split: devtest
+    src_lang: eng_Latn
+    tgt_lang: amh_Ethi
+    comet_model_name: masakhane/africomet-mtl
+  am-en:
+    dataset:
+      path: facebook/flores
+      src_config: amh_Ethi
+      tgt_config: eng_Latn
+      text_col: sentence
+      split: devtest
+    src_lang: amh_Ethi
+    tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
+  en-sw:
+    dataset:
+      path: facebook/flores
+      src_config: eng_Latn
+      tgt_config: swh_Latn
+      text_col: sentence
+      split: devtest
+    src_lang: eng_Latn
+    tgt_lang: swh_Latn
+    comet_model_name: masakhane/africomet-mtl
+  sw-en:
+    dataset:
+      path: facebook/flores
+      src_config: swh_Latn
+      tgt_config: eng_Latn
+      text_col: sentence
+      split: devtest
+    src_lang: swh_Latn
+    tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
+
+
+  
+
+logging:
+logging:
+  debug: true
+  log_dir: "logs/"
+  log_file: "empty-eos-nllb-200-3.3B-int8-eval.log"
+  results_file: "empty-eos-nllb-200-3.3B-int8-eval-results.json"
+  evaluation_summary_file: "empty-eos-nllb-200-3.3B-int8-eval-summary.csv"
