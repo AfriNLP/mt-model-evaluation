@@ -1,4 +1,4 @@
-ct2_model_path: ct2/ct2-nllb-200-3.3B-no-quant
+ct2_model_path: ct2/ct2-nllb-200-distilled-600M-en-amh-finetuned
 sp_model_path: sp/sentencepiece.bpe.model
 
 batch_size: 1024
@@ -291,6 +291,6 @@ logging:
 logging:
   debug: true
   log_dir: "logs/"
-  log_file: "nllb-200-3.3B-no-quant-eval.log"
-  results_file: "results/nllb-200-3.3B-no-quant-eval-results.json"
-  evaluation_summary_file: "results/nllb-200-3.3B-no-quant-eval-summary.csv"
+  log_file: "nllb-200-distilled-600M-en-amh-finetuned-eval.log"
+  results_file: "results/nllb-200-distilled-600M-en-amh-finetuned-eval-results.json"
+  evaluation_summary_file: "results/nllb-200-distilled-600M-en-amh-finetuned-eval-summary.csv"
