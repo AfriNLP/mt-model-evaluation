@@ -1,0 +1,33 @@
+ct2_model_path: ct2/ct2-nllb-en-amh-bidirection-finetuend
+sp_model_path: ct2/ct2-nllb-en-amh-bidirection-finetuend/sentencepiece.bpe.model
+
+batch_size: 16
+beam_size: 2
+testset:
+  en-am:
+    dataset:
+      path: facebook/flores
+      src_config: eng_Latn
+      tgt_config: amh_Ethi
+      text_col: sentence
+      split: devtest
+    src_lang: eng_Latn
+    tgt_lang: amh_Ethi
+    comet_model_name: masakhane/africomet-mtl
+  am-en:
+    dataset:
+      path: facebook/flores
+      src_config: amh_Ethi
+      tgt_config: eng_Latn
+      text_col: sentence
+      split: devtest
+    src_lang: amh_Ethi
+    tgt_lang: eng_Latn
+    comet_model_name: masakhane/africomet-mtl
+
+  
+
+logging:
+  debug: true
+  log_dir: "logs/"
+  log_file: nllb-600m-en-amh-bidrectional-v1-eval.log
