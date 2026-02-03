@@ -1,0 +1,3 @@
+Testset,Source Lang,Target Lang,BLEU,chrF++,COMET,Execution Time (s),Input Tokens,Output Tokens,Total Tokens,Tokens/sec
+en-am,eng_Latn,amh_Ethi,13.95,39.63,72.62,29.2052,32665,42713,75378,2580.9812
+am-en,amh_Ethi,eng_Latn,32.82,56.65,68.18,21.3562,42143,30583,72726,3405.3778

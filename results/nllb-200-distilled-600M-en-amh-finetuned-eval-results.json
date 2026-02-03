@@ -1,0 +1,28 @@
+{
+  "en-am": {
+    "Testset": "en-am",
+    "Source Lang": "eng_Latn",
+    "Target Lang": "amh_Ethi",
+    "BLEU": 13.95,
+    "chrF++": 39.63,
+    "COMET": 72.62,
+    "Execution Time (s)": 29.2052,
+    "Input Tokens": 32665,
+    "Output Tokens": 42713,
+    "Total Tokens": 75378,
+    "Tokens/sec": 2580.9812
+  },
+  "am-en": {
+    "Testset": "am-en",
+    "Source Lang": "amh_Ethi",
+    "Target Lang": "eng_Latn",
+    "BLEU": 32.82,
+    "chrF++": 56.65,
+    "COMET": 68.18,
+    "Execution Time (s)": 21.3562,
+    "Input Tokens": 42143,
+    "Output Tokens": 30583,
+    "Total Tokens": 72726,
+    "Tokens/sec": 3405.3778
+  }
+}

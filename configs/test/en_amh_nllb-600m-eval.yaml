@@ -1,8 +1,8 @@
-ct2_model_path: ct2/ct2-nllb-200-distilled-600M-en-amh-finetuned
-sp_model_path: sp/sentencepiece.bpe.model
+ct2_model_path: ct2/ct2-nllb-en-amh-bidirection-finetuend
+sp_model_path: ct2/ct2-nllb-en-amh-bidirection-finetuend/sentencepiece.bpe.model
 
-batch_size: 1024
-beam_size: 3
+batch_size: 16
+beam_size: 2
 testset:
   en-am:
     dataset:
@@ -24,13 +24,10 @@ testset:
     src_lang: amh_Ethi
     tgt_lang: eng_Latn
     comet_model_name: masakhane/africomet-mtl
-  
+
   
 
 logging:
-logging:
   debug: true
   log_dir: "logs/"
-  log_file: "nllb-200-distilled-600M-en-amh-finetuned-eval.log"
-  results_file: "results/nllb-200-distilled-600M-en-amh-finetuned-eval-results.json"
-  evaluation_summary_file: "results/nllb-200-distilled-600M-en-amh-finetuned-eval-summary.csv"
+  log_file: nllb-600m-en-amh-bidrectional-v1-eval.log

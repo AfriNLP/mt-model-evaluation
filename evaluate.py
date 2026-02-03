@@ -19,14 +19,9 @@ import time
 import json
 import os
 
-RESULTS_FILE = "evaluation_results.json"
 
-# Load existing results
-if os.path.exists(RESULTS_FILE):
-    with open(RESULTS_FILE, "r") as f:
-        existing_results = json.load(f)
-else:
-    existing_results = {}
+
+
 
 
 
@@ -91,66 +86,82 @@ def load_models(ct_model_path, sp_model_path):
 
 
 
-def generate_translations(sp, translator, src_lang, tgt_lang, source_sentences, batch_size=2048, beam_size=2):
-    # Clean sentences
+def generate_translations_iterable(
+    sp,
+    translator,
+    src_lang,
+    tgt_lang,
+    source_sentences,
+    batch_size=2048,
+    beam_size=2,
+    chunk_size=5000,
+):
+    """
+    Chunking + translate_iterable version of generate_translations().
+    """
+
+    # --- Clean and prepare sentences ---
     source_sents = [sent.strip() for sent in source_sentences]
 
-    # Target prefix
+    # Optional target prefixes (ctranslate2 expects list[list[str]])
     target_prefix = [[tgt_lang]] * len(source_sents)
 
-    # Subword encode and add special tokens
-    source_sents_subworded = sp.encode_as_pieces(source_sents)
-    source_sents_subworded = [[src_lang] + sent + ["</s>"] for sent in source_sents_subworded]
-    # print("\n===== SPM INPUT SAMPLE =====")
-    # for idx, toks in enumerate(source_sents_subworded):
-    #     print(f"Sample #{idx}")
-    #     print("Raw sentence:", source_sentences[idx])
-    #     print("SPM tokens:", toks)
-    #     if idx == 2:   # show only first 3 to keep output manageable
-    #         break
+    # Track metrics
+    total_input_tokens = 0
+    total_output_tokens = 0
+    all_translations = []
 
-    # print("Target prefix:", target_prefix[:3])
-    # print("============================\n")
+    # Chunk the input list
+    def chunks(lst, n):
+        for i in range(0, len(lst), n):
+            yield lst[i:i + n]
 
+    start_time = time.perf_counter()
 
-    # Count input tokens
-    num_input_tokens = sum(len(s) for s in source_sents_subworded)
+    for chunk in chunks(source_sents, chunk_size):
 
-    # Run translation with timing
-    start = time.perf_counter()
-    results = translator.translate_batch(
-        source_sents_subworded,
-        batch_type="tokens",
-        max_batch_size=batch_size,
-        beam_size=beam_size,
-        target_prefix=target_prefix
-    )
-    end = time.perf_counter()
-    execution_time = end - start
+        # --- Encode subwords ---
+        source_sents_sub = sp.encode_as_pieces(chunk)
+        source_sents_sub = [[src_lang] + s + ["</s>"] for s in source_sents_sub]
 
-    # Extract best hypotheses
-    translations = [result.hypotheses[0] for result in results]
+        total_input_tokens += sum(len(s) for s in source_sents_sub)
 
-    # Count output tokens
-    num_output_tokens = sum(len(t) for t in translations)
+        # --- Run translation using translate_iterable ---
+        results = translator.translate_iterable(
+            source=source_sents_sub,
+            beam_size=beam_size,
+            batch_type="tokens",
+            max_batch_size=batch_size,
+            target_prefix=[[tgt_lang]] * len(source_sents_sub),
+            length_penalty=1.1,
+            min_decoding_length=1,
+            max_decoding_length=512,
+        )
 
-    # Decode
-    translations_desubword = sp.decode(translations)
-    translations_desubword = [sent[len(tgt_lang):].strip() for sent in translations_desubword]
+        # Extract hypotheses
+        translations_tok = [result.hypotheses[0] for result in results]
+        total_output_tokens += sum(len(t) for t in translations_tok)
 
-    # Metrics
-    total_tokens = num_input_tokens + num_output_tokens
-    tokens_per_sec = total_tokens / execution_time if execution_time > 0 else float("inf")
+        # Decode SentencePiece
+        translations = sp.decode(translations_tok)
+
+        # Remove target prefix token (language tag)
+        translations = [t[len(tgt_lang):].strip() for t in translations]
+
+        all_translations.extend(translations)
+
+    end_time = time.perf_counter()
 
     metrics = {
-        "execution_time_sec": execution_time,
-        "input_tokens": num_input_tokens,
-        "output_tokens": num_output_tokens,
-        "total_tokens": total_tokens,
-        "tokens_per_sec": tokens_per_sec
+        "execution_time_sec": end_time - start_time,
+        "input_tokens": total_input_tokens,
+        "output_tokens": total_output_tokens,
+        "total_tokens": total_input_tokens + total_output_tokens,
+        "tokens_per_sec": (total_input_tokens + total_output_tokens) / (end_time - start_time),
     }
 
-    return translations_desubword, metrics
+    return all_translations, metrics
+
 
 def evaluate_model(source_sentences, translations, references, comet_model, logger):
     bleu = sacrebleu.corpus_bleu(translations, [references])
@@ -183,14 +194,24 @@ def main():
 
     with open(args.config, "r") as f:
         config = yaml.safe_load(f)
+    log_cfg = config.get("logging", {})
 
-    log_file = config.get("log_file", "logs/am_eval.log")
+    results_file = log_cfg.get("results_file", "evaluation_results.json")
+    summary_file = log_cfg.get("evaluation_summary_file", "evaluation_summary.csv")
+
+    # Load existing results
+    if os.path.exists(results_file):
+        with open(results_file, "r") as f:
+            existing_results = json.load(f)
+    else:
+        existing_results = {}
+
     logger = setup_logger(config)
     logger.info("Starting evaluation script.")
     # log_file = config.get("log_file", "logs/am_eval.log")
     ct_model_path = config.get("ct_model_path") or config.get("ct2_model_path")
     sp_model_path = config["sp_model_path"]
-    comet_model_name = config.get("comet_model_name", "masakhane/africomet-mtl")
+
     batch_size = config.get("batch_size", 2048)
     beam_size = config.get("beam_size", 2)
 
@@ -232,9 +253,15 @@ def main():
         # reference_sentences = reference_sentences[:N]
 
         logger.info("Generating translations...")
-        translations, metrics = generate_translations(
-            sp, translator, src_lang, tgt_lang, source_sentences,
-            batch_size=batch_size, beam_size=beam_size
+        translations, metrics = generate_translations_iterable(
+            sp, 
+            translator=translator,
+            src_lang=src_lang,
+            tgt_lang=tgt_lang,
+            source_sentences=source_sentences,
+            batch_size=batch_size,
+            beam_size=beam_size,
+            chunk_size=512
         )
 
         comet_model_cfg_name = test_cfg.get("comet_model_name", "masakhane/africomet-mtl")
@@ -266,7 +293,7 @@ def main():
 
         # Save after each testset to prevent data loss
         existing_results[test_name] = summary_entry
-        with open(RESULTS_FILE, "w") as f:
+        with open(results_file, "w") as f:
             json.dump(existing_results, f, indent=2)
 
         # summary_log.append(summary_entry)
@@ -300,7 +327,7 @@ def main():
             tablefmt="github"
         ))
 
-        with open("evaluation_summary.csv", "w", newline="") as f:
+        with open(summary_file, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow([
                 "Testset", "Source Lang", "Target Lang", "BLEU", "chrF++", "COMET",
