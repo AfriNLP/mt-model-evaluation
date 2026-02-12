@@ -1,6 +1,9 @@
 This repo evaluates NLLB-200 based machine translation models. It first generate translation for a given test dataset and evaluate the Ctranslate2 convereted model on different metrics; BLEU, CHRF++ and COMET. Chunking is applied for efficent translation generation and avoding memory overflows. 
 
-# Configuarition
+---
+
+
+## `Config.yaml`
 The config file contains all the configuarations needed to evaluate the model including the model to be evaluated. Here is overview of its section.
 ### `model`
 - `ct_model_path`: path to the ctranslate2 version of the model
