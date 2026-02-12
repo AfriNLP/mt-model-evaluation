@@ -97,7 +97,7 @@ def generate_translations_iterable(
     chunk_size=5000,
 ):
     """
-    Chunking + translate_iterable version of generate_translations().
+    Chunking + translate_iterable.
     """
 
     # --- Clean and prepare sentences ---
