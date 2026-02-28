@@ -1,7 +1,9 @@
 This repo evaluates NLLB-200 based machine translation models. It first generate translation for a given test dataset and evaluate the Ctranslate2 convereted model on different metrics; BLEU, CHRF++ and COMET. Chunking is applied for efficent translation generation and avoding memory overflows. 
 
 ---
+## Installation
 
+```pip install -r requirements.txt```
 
 ## `Config.yaml`
 The config file contains all the configuarations needed to evaluate the model including the model to be evaluated. Here is overview of its section.
@@ -27,6 +29,11 @@ The config file contains all the configuarations needed to evaluate the model in
 - `log_file`: log file name
 - `results_file`: results file name to save as json
 - `evaluation_summary_file`: results file to save as csv
+
+## Evaluate
+To evaluate your model prepare a configuration file and run `evaluate.py`. 
+
+```python evaluate.py --config configs/nllb_distilled_600M_full_dataset_finetuend_no_quant.yaml```
 
 ## Results
 Results are displayed in a formatted table. They are also saved as CSV and JSON files. Logs are written to a log file.
