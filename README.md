@@ -30,3 +30,22 @@ The config file contains all the configuarations needed to evaluate the model in
 
 ## Results
 Results are displayed in a formatted table. They are also saved as CSV and JSON files. Logs are written to a log file.
+
+## Citation
+
+This repository is part of the [AfriNLLB](https://github.com/AfriNLP/AfriNLLB) project. 
+If you use any part of the project's code, data, models, or approaches, please cite the following paper:
+
+```
+@inproceedings{moslem-etal-2026-afrinllb,
+    title = "{A}fri{NLLB}: Efficient Translation Models for African Languages",
+    author = "Moslem, Yasmin  and
+      Wassie, Aman Kassahun  and
+      Gizachew, Amanuel",
+    booktitle = "Proceedings of the Seventh Workshop on African Natural Language Processing (AfricaNLP)",
+    month = jul,
+    year = "2026",
+    address = "Rabat, Morocco",
+    publisher = "Association for Computational Linguistics",
+}
+```
